@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Fresh</title>
+    <!-- Link External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+
+<body>
+
+    <header>
+        <button onclick="toggleMenu()"
+            style="position: absolute; left: 20px; top: 20px; background: white; border: none; width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; color: var(--primary-dark);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <img src="images/logo.png" alt="Daily Fresh Logo"
+            style="width: 80px; display: block; margin: 0 auto 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); animation: float 3s ease-in-out infinite;">
+        <h2>Daily Fresh</h2>
+        <p
+            style="letter-spacing: 2px; text-transform: uppercase; font-size: 11px; margin-top: 8px; opacity: 0.8; font-weight: 500;">
+            Premium & Fresh Products</p>
+
+        <div class="contact-box"
+            style="margin-top: 20px; max-width: 400px; margin-left: auto; margin-right: auto; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 20px;">
+            <div
+                style="background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 20px; width: 100%; max-width: 320px; margin: 0 auto; text-align: center; border: 1px solid rgba(0,0,0,0.05);">
+                <div
+                    style="font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    📞 +91 70209 75382
+                </div>
+                <div
+                    style="font-size: 14px; color: var(--text-light); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    ✉️ spprdailyfhresh@gmail.com
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="section-title">
+            <span></span> Select Farm Fresh Products
+        </div>
+
+        <div class="search-container">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search products (e.g. Tomato, Potato)..."
+                onkeyup="filterItems()">
+        </div>
+
+        <div class="grid-products" id="productGrid">
+            <!-- Products will be loaded here dynamically from js/main.js -->
+            <div style="grid-column: 1/-1; text-align:center; padding: 40px;">
+                <p>Loading fresh products...</p>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <span>👤</span> Customer Details
+        </div>
+
+        <div class="grid-customer">
+            <div class="input-group">
+                <label>Full Name <span style="color:red; font-weight:bold;">* (must)</span></label>
+                <input id="name" placeholder="John Doe" />
+            </div>
+            <div class="input-group">
+                <label>Phone Number <span style="color:red; font-weight:bold;">* (must)</span></label>
+                <input id="phone" type="tel" placeholder="+91 98765 43210" />
+            </div>
+            <div class="input-group full-width">
+                <label>Email Address</label>
+                <input id="email" type="email" placeholder="john@example.com" />
+            </div>
+            <div class="input-group full-width">
+                <label>Delivery Address / Map Link <span style="color:red; font-weight:bold;">* (must)</span></label>
+                <textarea id="address" rows="3"
+                    placeholder="Flat No, Street, Landmark OR Paste Google Maps Link here"></textarea>
+            </div>
+        </div>
+
+        <div class="card summary-card">
+            <div class="total-row">
+                <span class="total-label">Total Amount</span>
+                <span class="total-amount">₹<span id="total">0</span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <button onclick="showPreview()"
+                    style="background: white; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; padding: 14px;">
+                    👁️ Preview Order Details
+                </button>
+                <button id="submitBtn" onclick="submitOrder()">
+                    ✅ Place Order
+                </button>
+            </div>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h3>🛒 Order Summary</h3>
+            <div id="previewList"
+                style="text-align: left; max-height: 300px; overflow-y: auto; margin: 15px 0; background: #f8fafc; padding: 15px; border-radius: 12px; font-size: 14px; border: 1px solid #edf2f7;">
+                <!-- List items -->
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 20px; font-size: 18px; color: var(--primary-dark); padding: 0 10px;">
+                <span>Total:</span>
+                <span>₹<span id="previewTotal">0</span></span>
+            </div>
+
+
+            <div class="modal-actions">
+                <button onclick="closePreviewModal()" class="btn-edit">Edit</button>
+                <button onclick="confirmOrderFromPreview()">Confirm & Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="success-overlay">
+        <div class="success-card">
+            <div class="checkmark-circle">
+                <div class="checkmark"></div>
+            </div>
+            <h2>Order Placed!</h2>
+            <p>Thank you, <span id="successName"></span>!<br>We have received your order and will deliver it fresh to
+                your doorstep.</p>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+                <button onclick="closeSuccessOverlay()"
+                    style="background: var(--primary); color: white; border: none; padding: 16px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px rgba(46, 125, 50, 0.3);">
+                    Continue Shopping
+                </button>
+                <button onclick="generateInvoice()"
+                    style="background: white; color: var(--text-dark); border: 1px solid #e2e8f0; padding: 14px 32px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    📄 Preview Bill
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Menu -->
+    <div id="sideMenu"
+        style="position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: white; box-shadow: 4px 0 20px rgba(0,0,0,0.1); z-index: 1000; transition: left 0.3s ease; padding: 20px; display: flex; flex-direction: column;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--primary-dark);">📋 My Orders</h3>
+            <button onclick="toggleMenu()"
+                style="border: none; background: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+        </div>
+
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <p style="font-size: 13px; color: #64748b; margin-top: 0; margin-bottom: 8px; font-weight: 500;">Enter Phone
+                No to View History</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="tel" id="historyPhoneInput" placeholder="Enter Phone Number"
+                    style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; width: 100%; box-sizing: border-box;">
+                <button onclick="loginHistory()"
+                    style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">
+                    View History
+                </button>
+            </div>
+        </div>
+
+        <div id="orderHistoryList" style="overflow-y: auto; flex: 1;">
+            <p style="text-align: center; color: #888; font-size: 14px; margin-top: 20px;">No past orders found.</p>
+        </div>
+
+        <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+            <button onclick="document.getElementById('helpModal').style.display='flex'"
+                style="width: 100%; background: #dfe6e9; color: #2d3436; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                ℹ️ Help
+            </button>
+        </div>
+    </div>
+
+    <!-- Help / About UI Modal -->
+    <div id="helpModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center;">
+        <div
+            style="background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 16px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+            <button onclick="document.getElementById('helpModal').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; color: #aaa; cursor: pointer;">&times;</button>
+            <h2 style="color: #2e7d32; margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                <span>🚀</span> Help
+            </h2>
+            <div style="line-height: 1.6; color: #4a5568;">
+                <p><strong>Premium Shopping Experience</strong></p>
+                <p><strong>Welcome to Daily Fresh! Here's how to use the app:</strong></p>
+
+                <h4 style="margin: 10px 0 5px; color: #2d3748;">🛒 How to Order</h4>
+                <ul style="padding-left: 20px; margin-bottom: 10px; font-size: 13px;">
+                    <li><strong>Browse & Search:</strong> Scroll through the list or use the search bar to find items
+                        (English or Hindi).</li>
+                    <li><strong>Add to Cart:</strong> Click '<strong>+</strong>' to add items. For items sold by weight
+                        (kg), each click adds <strong>100g</strong>.</li>
+                    <li><strong>Custom Quantity:</strong> Click on the number box to type exact quantity (e.g. 1.5 for
+                        1.5kg).</li>
+                    <li><strong>Preview:</strong> Click 'Preview Order' to review your list before sending.</li>
+                </ul>
+
+                <h4 style="margin: 10px 0 5px; color: #2d3748;">📱 Order History</h4>
+                <ul style="padding-left: 20px; margin-bottom: 20px; font-size: 13px;">
+                    <li>Open the Side Menu (top-left button).</li>
+                    <li>Enter your registered <strong>Phone Number</strong>.</li>
+                    <li>Click 'View History' to see past orders and download old bills.</li>
+                </ul>
+                <div
+                    style="background: #f7fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #38a169; font-size: 13px;">
+                    <strong>System Version 2.0 (Consumer Edition)</strong><br>
+                    Daily Fresh Store App
+                </div>
+            </div>
+            <button onclick="document.getElementById('helpModal').style.display='none'"
+                style="margin-top: 20px; width: 100%; background: #2d3748; color: white; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/search_logic.js"></script>
+
+    <!-- Coming Soon Modal -->
+    <div id="comingSoonModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;">
+        <div
+            style="background: white; padding: 30px; border-radius: 16px; text-align: center; width: 80%; max-width: 300px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+            <div style="font-size: 40px; margin-bottom: 15px;">🚧</div>
+            <h3 style="margin: 0 0 10px 0; color: #333;">Coming Soon!</h3>
+            <p style="color: #666; font-size: 14px; margin-bottom: 20px;">This feature is currently under development.
+            </p>
+            <button onclick="document.getElementById('comingSoonModal').style.display='none'"
+                style="background: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                Okay
+            </button>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="imagePreviewModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 4000; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="position: relative; max-width: 90%; max-height: 80vh; overflow: auto; background: transparent;">
+            <img id="previewImage" src=""
+                style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            <button onclick="closeImagePreview()"
+                style="position: absolute; top: -40px; right: 0; background: white; border: none; font-size: 24px; color: #333; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;">&times;</button>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 15px;">
+            <a id="downloadLink" href="#" download="Bill.jpg"
+                style="background: #38a169; color: white; text-decoration: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(56, 161, 105, 0.4);">
+                📥 Download Image
+            </a>
+            <button onclick="closeImagePreview()"
+                style="background: #e53e3e; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);">
+                ❌ Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden Bill Template for Image Generation -->
+    <div id="userBill"
+        style="position: fixed; left: -9999px; top: 0; width: 400px; background: white; padding: 20px; border: 1px solid #eee;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: #2e7d32; font-weight: 800; margin: 0; font-size: 22px; text-transform: uppercase;">Daily
+                Fresh</h2>
+            <p style="font-size: 11px; color: #718096; margin: 2px 0 0;">Premium Vegetables & Fruits</p>
+            <p style="font-size: 11px; color: #2d3748; margin: 2px 0 0; font-weight: 600;">📞 Contact: +91 70209 75382
+            </p>
+            <div style="margin: 10px auto; width: 100%; border-bottom: 2px dashed #cbd5e0;"></div>
+        </div>
+
+        <div
+            style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 15px; color: #4a5568;">
+            <div style="text-align: left;">
+                <div style="font-weight: 700; color: #2d3748; font-size: 13px;" id="billName">Name</div>
+                <div id="billPhone">Phone</div>
+                <div id="billAddress" style="max-width: 200px; word-wrap: break-word;">Address</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-weight: 700; color: #2d3748; font-size: 13px;" id="billTotal">₹0</div>
+                <div id="billId">#ID</div>
+                <div id="billDate">Date</div>
+            </div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 15px;">
+            <thead style="border-top: 1px solid #2d3748; border-bottom: 1px solid #2d3748;">
+                <tr>
+                    <th style="text-align: left; padding: 6px 0; color: #2d3748; width: 40%;">Item</th>
+                    <th style="text-align: center; padding: 6px 0; color: #2d3748; width: 20%;">Qty</th>
+                    <th style="text-align: center; padding: 6px 0; color: #2d3748; width: 20%;">Rate</th>
+                    <th style="text-align: right; padding: 6px 0; color: #2d3748; width: 20%;">Total</th>
+                </tr>
+            </thead>
+            <tbody id="billItems" style="border-bottom: 1px solid #2d3748;">
+                <!-- JS Injected -->
+            </tbody>
+        </table>
+
+        <div
+            style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #2d3748; margin-top: 10px;">
+            <span>Grand Total</span>
+            <span id="billGrandTotal">₹0</span>
+        </div>
+
+        <div
+            style="margin-top: 20px; text-align: center; font-size: 10px; color: #718096; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+            Thank you for shopping with Daily Fresh! 🥬<br>
+            Stay Healthy, Eat Fresh.
+        </div>
+    </div>
+
+</body>
+
+</html>
