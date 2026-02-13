@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Daily Fresh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/store/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <style>
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #229954;
+        }
+
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .product-image-section {
+            text-align: center;
+        }
+
+        .product-image-section img {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-info-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .product-local-name {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .price-unit-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+
+        .price-display {
+            font-size: 2rem;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .unit-display {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .description-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-left: 4px solid #27ae60;
+            border-radius: 8px;
+        }
+
+        .description-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .description-section p {
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .quantity-section {
+            margin: 2rem 0;
+        }
+
+        .quantity-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+
+        .quantity-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .quantity-controls button {
+            padding: 0.8rem 1.2rem;
+            font-size: 1.2rem;
+            border: 2px solid #27ae60;
+            background: white;
+            color: #27ae60;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quantity-controls button:hover {
+            background: #27ae60;
+            color: white;
+        }
+
+        .quantity-controls input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #229954;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: #f0fdf4;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item value {
+            display: block;
+            font-size: 1.3rem;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+
+            .product-info-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .price-display {
+                font-size: 1.5rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="/static/store/images/logo.png" alt="Daily Fresh Logo" class="logo">
+            <h1>Daily Fresh</h1>
+            <p>PREMIUM & FRESH PRODUCTS</p>
+        </div>
+        <div class="contact-info">
+            <p><i class="fas fa-phone-alt"></i> +91 70209 75382</p>
+            <p><i class="fas fa-envelope"></i> spprdailyfresh@gmail.com</p>
+        </div>
+    </header>
+
+    <main class="product-detail-container">
+        <a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Back to Products</a>
+
+        <div class="detail-content">
+            <!-- Product Image Section -->
+            <div class="product-image-section">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x400?text={{ product.name }}{% endif %}"
+                    alt="{{ product.name }}">
+            </div>
+
+            <!-- Product Info Section -->
+            <div class="product-info-section">
+                <h1>{{ product.name }}</h1>
+                <p class="product-local-name">{{ product.local_name }}</p>
+
+                <div class="price-unit-section">
+                    <div class="price-display">₹{{ product.price }}</div>
+                    <div class="unit-display">per {{ product.unit }}</div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Unit Type</label>
+                        <value>{{ product.unit|upper }}</value>
+                    </div>
+                    <div class="info-item">
+                        <label>Product ID</label>
+                        <value>#{{ product.id }}</value>
+                    </div>
+                </div>
+
+                {% if product.description %}
+                <div class="description-section">
+                    <h3><i class="fas fa-info-circle"></i> Product Details</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+                {% endif %}
+
+                <div class="quantity-section">
+                    <label>SELECT QUANTITY</label>
+                    <select id="weight-select" class="quantity-select">
+                        <option value="Select Weight">Select Weight/Quantity</option>
+                        <option value="250g">250g</option>
+                        <option value="500g">500g</option>
+                        <option value="1kg">1kg</option>
+                        <option value="2kg">2kg</option>
+                        <option value="3kg">3kg</option>
+                    </select>
+
+                    <label>Number of Units</label>
+                    <div class="quantity-controls">
+                        <button onclick="decreaseQty()">-</button>
+                        <input type="number" id="qty-input" value="0" readonly>
+                        <button onclick="increaseQty()">+</button>
+                    </div>
+                </div>
+
+                <button class="add-to-cart-btn" onclick="addToCart()">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; background: #f8f9fa; margin-top: 3rem; color: #7f8c8d;">
+        <p>&copy; 2025 Daily Fresh. All products are farm-fresh and delivered with care.</p>
+    </footer>
+
+    <script>
+        function increaseQty() {
+            const input = document.getElementById('qty-input');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decreaseQty() {
+            const input = document.getElementById('qty-input');
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
+        function addToCart() {
+            const weight = document.getElementById('weight-select').value;
+            const qty = document.getElementById('qty-input').value;
+
+            if (weight === 'Select Weight') {
+                alert('Please select a weight/quantity');
+                return;
+            }
+
+            if (qty === '0') {
+                alert('Please select a quantity');
+                return;
+            }
+
+            // Store product data in localStorage for cart
+            const product = {
+                id: {{ product.id }},
+                name: '{{ product.name }}',
+                price: {{ product.price }},
+                unit: '{{ product.unit }}',
+                weight: weight,
+                quantity: qty
+            };
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            alert(`Added ${qty} × ${weight} of ${product.name} to cart!`);
+            document.getElementById('qty-input').value = 0;
+            document.getElementById('weight-select').value = 'Select Weight';
+        }
+    </script>
+</body>
+
+</html>

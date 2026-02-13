@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Fresh - Farm Fresh Vegetables & Fruits</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/store/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <style>
+        .hero-banner {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #1b4d3e;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 30px;
+            margin: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero-banner h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-banner p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .hero-tagline {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .tagline-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .tagline-item i {
+            font-size: 1.3rem;
+        }
+
+        .category-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            padding: 0 2rem;
+        }
+
+        .category-tag {
+            padding: 0.6rem 1.2rem;
+            background: #f0fdf4;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .category-tag:hover,
+        .category-tag.active {
+            background: #27ae60;
+            color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin: 2rem 0 1.5rem 0;
+            padding: 0 2rem;
+        }
+
+        .section-header h2 {
+            color: #1b4d3e;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .section-header p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+        .benefits-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .benefit-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: #27ae60;
+            margin-bottom: 0.8rem;
+        }
+
+        .benefit-card h3 {
+            color: #1b4d3e;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .benefit-card p {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .cart-summary {
+            background: #f0fdf4;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin: 2rem;
+            text-align: center;
+        }
+
+        .cart-summary h3 {
+            margin: 0 0 1rem 0;
+            color: #1b4d3e;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            color: #1b4d3e;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+            color: #1b4d3e;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-tagline {
+                gap: 1rem;
+            }
+
+            .category-tags {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="/static/store/images/logo.png" alt="Daily Fresh Logo" class="logo">
+            <h1>Daily Fresh</h1>
+            <p>PREMIUM & FRESH PRODUCTS</p>
+        </div>
+        <div class="contact-info">
+            <p><i class="fas fa-phone-alt"></i> +91 70209 75382</p>
+            <p><i class="fas fa-envelope"></i> spprdailyfresh@gmail.com</p>
+            <a href="{% url 'customer_orders' %}" style="text-decoration: none; color: inherit;">
+                <i class="fas fa-box"></i> My Orders
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <h1>🌱 Fresh Farm Produce Delivered To Your Door</h1>
+        <p>100% Organic • Pesticide-Free • Farm Fresh Quality</p>
+        <div class="hero-tagline">
+            <div class="tagline-item">
+                <i class="fas fa-leaf"></i>
+                <span>Organic Certified</span>
+            </div>
+            <div class="tagline-item">
+                <i class="fas fa-truck"></i>
+                <span>Fast Delivery</span>
+            </div>
+            <div class="tagline-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Quality Guaranteed</span>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- Search Section -->
+        <section class="search-section">
+            <h2>Select Farm Fresh Products</h2>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products (e.g. Tomato, Potato)..." id="search-input">
+            </div>
+        </section>
+
+
+        <!-- Products Grid Section -->
+        <div class="section-header">
+            <h2>Our Fresh Selection</h2>
+            <p>Browse our complete range of farm-fresh products</p>
+        </div>
+
+        <section class="products-grid" id="products-grid">
+            {% for product in products %}
+            <div class="product-card" data-product-id="{{ product.id }}" data-product-name="{{ product.name|lower }}">
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="product-image-wrapper">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/400x300?text={{ product.name }}{% endif %}"
+                            alt="{{ product.name }}" class="product-image">
+                    </div>
+                    <h3>{{ product.name }}</h3>
+                    <p class="local-name">{{ product.local_name }}</p>
+                    {% if product.description %}
+                    <p class="product-description"
+                        style="font-size: 0.85rem; color: #666; margin: 0.5rem 0; line-height: 1.4;">
+                        {{ product.description|truncatewords:15 }}
+                    </p>
+                    {% endif %}
+                    <div class="price-tag">₹{{ product.price }}/{{ product.unit }}</div>
+                </a>
+
+                <div class="quantity-controls">
+                    <label>QUANTITY ({{ product.unit|upper }})</label>
+                    <select class="quantity-select" onchange="toggleCustomQty(this)">
+                        <option value="Select Weight">Select Weight</option>
+                        <option value="250g">250g</option>
+                        <option value="500g">500g</option>
+                        <option value="1kg">1kg</option>
+                        <option value="2kg">2kg</option>
+                        <option value="custom">Custom Qty</option>
+                    </select>
+                    <div class="custom-qty-wrapper" style="display: none; margin-top: 5px;">
+                        <input type="number" class="custom-qty-input" placeholder="Enter qty ({{ product.unit|lower }})"
+                            step="0.1" min="0" oninput="updateTotal()">
+                        <span class="unit-label">{{ product.unit|lower }}</span>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Customer Details Section -->
+        <section class="customer-details">
+            <h2><i class="fas fa-user-circle"></i> Delivery Information</h2>
+            <form id="order-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>FULL NAME * <span class="required">(MUST)</span></label>
+                    <input type="text" name="full_name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>PHONE NUMBER * <span class="required">(MUST)</span></label>
+                    <input type="tel" name="phone_number" placeholder="Your 10-digit phone number" required>
+                </div>
+                <div class="form-group full-width">
+                    <label>EMAIL ADDRESS (Optional)</label>
+                    <input type="email" name="email" placeholder="Your email address">
+                </div>
+                <div class="form-group full-width">
+                    <label>DELIVERY ADDRESS / MAP LINK * <span class="required">(MUST)</span></label>
+                    <textarea name="address"
+                        placeholder="Apartment/House No., Street, City, Pincode (or paste Google Maps link)"
+                        required></textarea>
+                </div>
+            </form>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="total-section">
+            <div class="total-amount">
+                <h3>Total Amount</h3>
+                <span class="amount">₹0.00</span>
+            </div>
+
+            <div class="button-group">
+                <button class="preview-btn" onclick="showPreview()"><i class="fas fa-eye"></i> Preview Order</button>
+                <button class="place-order-btn" onclick="placeOrder()"><i class="fas fa-check-circle"></i> Place
+                    Order</button>
+            </div>
+        </section>
+        <!-- Order Preview Modal -->
+        <div id="previewModal"
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; overflow-y: auto;">
+            <div style="background: white; max-width: 600px; margin: 2rem auto; border-radius: 16px; padding: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0; color: #1b4d3e;">📋 Order Preview</h2>
+                    <button onclick="closePreview()"
+                        style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">✕</button>
+                </div>
+
+                <!-- Customer Details Preview -->
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <h3 style="color: #1b4d3e; margin-top: 0; margin-bottom: 1rem;">Customer Details</h3>
+                    <p style="margin: 0.5rem 0;"><strong>Name:</strong> <span id="previewName">-</span></p>
+                    <p style="margin: 0.5rem 0;"><strong>Phone:</strong> <span id="previewPhone">-</span></p>
+                    <p style="margin: 0.5rem 0;"><strong>Email:</strong> <span id="previewEmail">-</span></p>
+                    <p style="margin: 0.5rem 0;"><strong>Address:</strong> <span id="previewAddress">-</span></p>
+                </div>
+
+                <!-- Cart Items Preview -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: #1b4d3e; margin-top: 0; margin-bottom: 1rem;">🛒 Order Items</h3>
+                    <div id="previewItems" style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem;">
+                        <p style="color: #999; text-align: center;">No items selected</p>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; color: #1b4d3e;">Total Amount:</h3>
+                        <h2 style="margin: 0; color: #27ae60;">₹<span id="previewTotal">0</span></h2>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="closePreview()"
+                        style="flex: 1; padding: 1rem; border: 2px solid #ddd; background: white; border-radius: 8px; font-weight: 600; cursor: pointer;">Back</button>
+                    <button onclick="placeOrderFromPreview()"
+                        style="flex: 1; padding: 1rem; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">✓
+                        Confirm & Place Order</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Success Modal -->
+        <div id="successModal" class="success-modal-overlay" style="display: none;">
+            <div class="success-modal-content">
+                <button onclick="dismissSuccessModal()" class="modal-close-btn">&times;</button>
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Your Order Placed!</h2>
+                <p>Order ID: <span id="successOrderId">#0000</span></p>
+                <p>Thank you for choosing Daily Fresh. We'll deliver your fresh produce soon!</p>
+                <div class="success-actions">
+                    <button onclick="closeSuccessModal()" class="success-btn">View My Orders</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <h3 style="margin-bottom: 1rem;">Daily Fresh</h3>
+        <p><i class="fas fa-map-marker-alt"></i> Serving Fresh Produce Since 2024</p>
+        <p><i class="fas fa-phone"></i> +91 70209 75382</p>
+        <p><i class="fas fa-envelope"></i> spprdailyfresh@gmail.com</p>
+        <hr style="margin: 1rem 0; border: 1px solid rgba(255,255,255,0.3);">
+        <p>&copy; 2025 Daily Fresh. All rights reserved. Premium quality guaranteed.</p>
+    </footer>
+
+    <script src="/static/store/script.js?v=1.1"></script>
+    <script>
+        // Search functionality
+        document.getElementById('search-input').addEventListener('keyup', function () {
+            const searchTerm = this.value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+
+            productCards.forEach(card => {
+                const productName = card.getAttribute('data-product-name');
+                if (productName.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Category filter functionality
+        function filterByCategory(category, element) {
+            // Update active state
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // Note: For full functionality, you'd need to add category data to products
+            // For now, showing all products (category filtering can be enhanced later)
+            const productCards = document.querySelectorAll('.product-card');
+            if (category === 'all') {
+                productCards.forEach(card => card.style.display = '');
+            }
+        }
+    </script>
+</body>
+
+</html>

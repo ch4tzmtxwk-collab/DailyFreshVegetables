@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Daily Fresh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'store/login_style.css' %}">
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-section">
+                <img src="{% static 'store/images/logo.png' %}" alt="Daily Fresh Logo" class="logo">
+                <!-- If logo image is missing, we might see alt text or broken image. 
+                     Make sure to handle if the user doesn't have the logo yet or use placeholder? 
+                     User definitely has a logo from index.html. -->
+            </div>
+
+            <h2>Admin Portal</h2>
+            <p class="subtitle">Secure Access Only</p>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+
+                {% if error %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                </div>
+                {% endif %}
+
+                <div class="input-group">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+
+                <div class="input-group">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+
+            <div class="login-footer">
+                <a href="#" class="register-link">Register New Admin</a>
+                <a href="#" class="super-admin-link"><i class="fas fa-crown"></i> Super Admin Login</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

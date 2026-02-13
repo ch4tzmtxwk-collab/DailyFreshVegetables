@@ -1,0 +1,366 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{ order.id }} - Daily Fresh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f8;
+            padding: 40px;
+            color: #333;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .logo-section h1 {
+            color: #2ecc71;
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .logo-section p {
+            margin: 5px 0 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .invoice-details {
+            text-align: right;
+        }
+
+        .invoice-details h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #95a5a6;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .bill-to {
+            margin-bottom: 30px;
+        }
+
+        .bill-to p {
+            margin: 0 0 5px;
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .total-box {
+            background: #fdfdfd;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            min-width: 250px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .grand-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #27ae60;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        .print-btn {
+            display: block;
+            margin: 20px auto 0;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .print-btn:hover {
+            background: #27ae60;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .share-email-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .share-email-btn:hover {
+            background: #2980b9;
+        }
+
+        .share-whatsapp-btn {
+            background: #25d366;
+            color: white;
+        }
+
+        .share-whatsapp-btn:hover {
+            background: #1ead4f;
+        }
+
+        .copy-btn {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: #8e44ad;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .invoice-container {
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            .action-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="invoice-container">
+        <header class="header">
+            <div class="logo-section">
+                <h1>Daily Fresh</h1>
+                <p>Premium Quality Vegetables & Fruits</p>
+                <p>+91 70209 75382</p>
+            </div>
+            <div class="invoice-details">
+                <h2>INVOICE</h2>
+                <p>#INV-{{ order.id }}</p>
+                <p>{{ order.created_at|date:"F d, Y" }}</p>
+            </div>
+        </header>
+
+        <section class="bill-to">
+            <div class="section-title">Bill To:</div>
+            <p><strong>{{ order.full_name }}</strong></p>
+            <p>{{ order.phone_number }}</p>
+            <p>{{ order.address }}</p>
+        </section>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Item Description</th>
+                    <th>Qty</th>
+                    <th style="text-align:right">Rate/Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.product.name }} {% if item.product.local_name %}<span style="color:#999">({{
+                            item.product.local_name }})</span>{% endif %}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td style="text-align:right">₹{{ item.price_at_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <div class="total-box">
+                <div class="total-row grand-total">
+                    <span>Total Amount</span>
+                    <span>₹{{ order.total_amount }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for shopping with Daily Fresh!</p>
+        </div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print Invoice</button>
+
+    <div class="action-buttons">
+        <button class="action-btn share-email-btn" onclick="shareViaEmail()">
+            <i class="fas fa-envelope"></i> Share via Email
+        </button>
+        <button class="action-btn share-whatsapp-btn" onclick="shareViaWhatsApp()">
+            <i class="fab fa-whatsapp"></i> Share via WhatsApp
+        </button>
+        <button class="action-btn copy-btn" onclick="copyBillDetails()">
+            <i class="fas fa-copy"></i> Copy Bill Details
+        </button>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script>
+        const orderData = {
+            orderId: {{ order.id }},
+        customerName: '{{ order.full_name|escapejs }}',
+            phone: '{{ order.phone_number }}',
+                email: '{{ order.email|escapejs }}',
+                    address: '{{ order.address|escapejs }}',
+                        totalAmount: '{{ order.total_amount }}',
+                            createdAt: '{{ order.created_at|date:"d M, Y h:i A"|escapejs }}',
+                                items: [
+                                    {% for item in order.items.all %}
+        {
+            product: '{{ item.product.name|escapejs }}',
+                quantity: '{{ item.quantity|escapejs }}',
+                    price: '{{ item.price_at_time }}'
+        } { { forloop.comma } }
+        {% endfor %}
+            ]
+        };
+
+        function shareViaEmail() {
+            const subject = `Order Invoice #${orderData.orderId} - Daily Fresh`;
+            const body = generateBillText();
+            const mailtoLink = `mailto:${orderData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            if (!orderData.email) {
+                alert('No email address found for this order. Please contact customer manually.');
+                return;
+            }
+
+            window.location.href = mailtoLink;
+        }
+
+        function shareViaWhatsApp() {
+            const billText = generateBillText();
+            const encodedText = encodeURIComponent(billText);
+            const phone = orderData.phone.replace(/[^0-9]/g, '');
+            const whatsappUrl = `https://wa.me/91${phone}?text=${encodedText}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function copyBillDetails() {
+            const billText = generateBillText();
+            navigator.clipboard.writeText(billText).then(() => {
+                alert('Bill details copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy. Please try again.');
+            });
+        }
+
+        function generateBillText() {
+            let text = `🧾 INVOICE #INV-${orderData.orderId}\n`;
+            text += `📅 Date: ${orderData.createdAt}\n\n`;
+            text += `👤 Customer: ${orderData.customerName}\n`;
+            text += `📞 Phone: ${orderData.phone}\n`;
+            text += `📍 Address: ${orderData.address}\n\n`;
+            text += `📦 Items:\n`;
+            text += `${'='.repeat(40)}\n`;
+
+            orderData.items.forEach((item, index) => {
+                text += `${index + 1}. ${item.product}\n   Qty: ${item.quantity} | Price: ₹${item.price}\n`;
+            });
+
+            text += `${'='.repeat(40)}\n\n`;
+            text += `💰 Total Amount: ₹${orderData.totalAmount}\n\n`;
+            text += `Thank you for shopping with Daily Fresh! 🌱`;
+
+            return text;
+        }
+    </script>

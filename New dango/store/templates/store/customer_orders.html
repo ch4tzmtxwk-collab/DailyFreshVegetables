@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Daily Fresh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/store/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #1d1d1f;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #f5f5f7;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* iPhone Liquid Mesh Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(at 0% 0%, rgba(132, 250, 176, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(143, 211, 244, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(200, 250, 180, 0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(160, 240, 255, 0.2) 0px, transparent 50%);
+            filter: blur(100px);
+            animation: meshMove 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes meshMove {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+
+            100% {
+                transform: scale(1.2) translate(10px, 20px);
+            }
+        }
+
+        .orders-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .orders-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .orders-header h1 {
+            font-size: 2.5rem;
+            color: #1b4d3e;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 2.5rem;
+            border-radius: 32px;
+            margin-bottom: 3rem;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.04);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 1.2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            color: #1d1d1f;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-form button {
+            padding: 1rem 2.5rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.2);
+        }
+
+        .search-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 32px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+            border-color: rgba(39, 174, 96, 0.4);
+        }
+
+        .order-header {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(39, 174, 96, 0.03);
+        }
+
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .order-id {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #1b4d3e;
+        }
+
+        .order-date {
+            font-size: 0.9rem;
+            color: #6e6e73;
+            font-weight: 500;
+        }
+
+        .order-total {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #27ae60;
+        }
+
+        .order-body {
+            padding: 2.5rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #86868b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 0.8rem;
+        }
+
+        .customer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 0.85rem;
+            color: #86868b;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-item div {
+            font-size: 1.1rem;
+            color: #1d1d1f;
+            font-weight: 600;
+        }
+
+        .items-list {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .item-name {
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+
+        .item-quantity {
+            color: #86868b;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .item-price {
+            font-weight: 800;
+            color: #1b4d3e;
+            font-size: 1.1rem;
+        }
+
+        .order-address {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .order-address p {
+            color: #1d1d1f;
+            line-height: 1.6;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            color: #1b4d3e;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #fff;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-container img.logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-container h1 {
+            font-size: 2.2rem;
+            color: #1b4d3e;
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .logo-container p {
+            color: #6e6e73;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            margin-top: 0.4rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-info p {
+            font-size: 0.9rem;
+            color: #1d1d1f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            color: #1b4d3e;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            color: #86868b;
+        }
+
+        .no-orders i {
+            font-size: 4rem;
+            color: rgba(39, 174, 96, 0.2);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+
+            .order-header {
+                padding: 1.5rem;
+            }
+
+            .order-total {
+                font-size: 1.4rem;
+            }
+
+            .order-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="/static/store/images/logo.png" alt="Daily Fresh Logo" class="logo">
+            <h1>Daily Fresh</h1>
+            <p>PREMIUM & FRESH PRODUCTS</p>
+        </div>
+        <div class="contact-info">
+            <p><i class="fas fa-phone-alt"></i> +91 70209 75382</p>
+            <p><i class="fas fa-envelope"></i> spprdailyfresh@gmail.com</p>
+        </div>
+    </header>
+
+    <main class="orders-container">
+        <a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+
+        <div class="orders-header">
+            <h1><i class="fas fa-box"></i> My Orders</h1>
+            <p>Track and view all your orders</p>
+        </div>
+
+        <div class="search-section">
+            <h3 style="text-align: center; margin-bottom: 1rem; color: #2c3e50;">
+                <i class="fas fa-search"></i> Find Your Orders
+            </h3>
+            <form method="GET" class="search-form">
+                <input type="tel" name="phone" placeholder="Enter your phone number" value="{{ phone_number }}"
+                    required>
+                <button type="submit">Search Orders</button>
+            </form>
+        </div>
+
+        {% if phone_number %}
+        {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-info">
+                        <div class="order-id">Order #{{ order.id }}</div>
+                        <div class="order-date">
+                            <i class="fas fa-calendar-alt"></i> {{ order.created_at|date:"d M, Y h:i A" }}
+                        </div>
+                    </div>
+                    <div class="order-total">₹{{ order.total_amount }}</div>
+                </div>
+
+                <div class="order-body">
+                    <div class="section-title">
+                        <i class="fas fa-user-circle"></i> Customer Details
+                    </div>
+                    <div class="customer-grid">
+                        <div class="detail-item">
+                            <label>Name</label>
+                            <div>{{ order.full_name }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Phone</label>
+                            <div>
+                                <a href="tel:{{ order.phone_number }}" style="color: #27ae60; text-decoration: none;">
+                                    {{ order.phone_number }}
+                                </a>
+                            </div>
+                        </div>
+                        {% if order.email %}
+                        <div class="detail-item">
+                            <label>Email</label>
+                            <div>{{ order.email }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="section-title">
+                        <i class="fas fa-shopping-bag"></i> Items in this order
+                    </div>
+                    <div class="items-list">
+                        {% for item in order.items.all %}
+                        <div class="item-row">
+                            <div class="item-main">
+                                <span class="item-name">{{ item.product.name }}</span>
+                                <span class="item-quantity">{{ item.quantity }}</span>
+                            </div>
+                            <div class="item-price">₹{{ item.price_at_time }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="section-title">
+                        <i class="fas fa-map-marker-alt"></i> Delivery Address
+                    </div>
+                    <div class="order-address">
+                        <p>{{ order.address }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-orders">
+            <i class="fas fa-inbox"></i>
+            <h3>No Orders Found</h3>
+            <p>We couldn't find any orders for phone number: <strong>{{ phone_number }}</strong></p>
+            <p style="margin-top: 1rem;">Please check your phone number and try again.</p>
+            <a href="{% url 'customer_orders' %}"
+                style="color: #27ae60; text-decoration: none; margin-top: 1rem; display: inline-block;">
+                <i class="fas fa-redo"></i> Search Again
+            </a>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="no-orders">
+            <i class="fas fa-info-circle"></i>
+            <h3>Enter Your Phone Number</h3>
+            <p>To view your orders, please enter the phone number you used when placing your order.</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Daily Fresh. All products are farm-fresh and delivered with care.</p>
+    </footer>
+</body>
+
+</html>

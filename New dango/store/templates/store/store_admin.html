@@ -1,0 +1,492 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Daily Fresh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'store/admin_style.css' %}">
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="admin-header">
+        <div class="header-left">
+            <div class="logo-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="header-titles">
+                <h1>Admin Panel</h1>
+                <nav>
+                    <a href="#" id="nav-products" class="active"
+                        onclick="showSection('products'); return false;">Products</a>
+                    <a href="#" id="nav-orders" onclick="showSection('orders'); return false;">Orders</a>
+                    {% if request.user.is_superuser %}
+                    <a href="#" id="nav-admins" onclick="showSection('admins'); return false;">Admins</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="add-product-btn" onclick="openAddModal()"><i class="fas fa-plus"></i> Add Product</button>
+            {% if request.user.is_superuser %}
+            <button class="add-product-btn" onclick="openAddAdminModal()"
+                style="background-color: #34495e; margin-left: 10px;"><i class="fas fa-user-plus"></i> Add
+                Admin</button>
+            {% endif %}
+            <span class="user-info">User: {{ request.user.username|default:"Sushant" }}</span>
+            <a href="{% url 'index' %}" class="open-shop-btn">Open Shop <i class="fas fa-external-link-alt"></i></a>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- Dashboard Widgets -->
+        <section class="dashboard-widgets">
+
+
+            <div class="widget store-configs">
+                <div class="widget-content">
+                    <div class="widget-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <span>Store Configurations</span>
+                </div>
+                <button class="open-btn">Open Settings</button>
+            </div>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search products...">
+        </div>
+
+        <!-- Product List -->
+        <div id="products-section" class="product-list">
+            {% for product in products %}
+            <div class="product-item">
+                <div class="product-info">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}https://placehold.co/100x100?text={{ product.name }}{% endif %}"
+                        alt="{{ product.name }}" class="product-thumb">
+                    <div class="product-details">
+                        <h3>{{ product.name }} <span class="local-name">({{ product.local_name }})</span></h3>
+                        <div class="rate-input-group">
+                            <label>Rate: ₹</label>
+                            <input type="text" value="{{ product.price }}" class="rate-input">
+                            <span class="unit">/{{ product.unit }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-actions">
+                    <button class="action-btn edit-btn"
+                        onclick="openEditModal('{{ product.id }}', '{{ product.name|escapejs }}', '{{ product.local_name|default:""|escapejs }}', '{{ product.price }}', '{{ product.unit|escapejs }}')"><i
+                            class="fas fa-pencil-alt"></i></button>
+                    <button class="action-btn delete-btn" onclick="deleteProduct('{{ product.id }}')"><i
+                            class="fas fa-trash-alt"></i></button>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Fallback if no products, just for demo matching screenshot if empty -->
+            {% if not products %}
+            <div class="product-item">
+                <div class="product-info">
+                    <img src="https://placehold.co/100x100?text=Tomato" alt="Tomato" class="product-thumb">
+                    <div class="product-details">
+                        <h3>Farmers Tomato <span class="local-name">(टमाटर)</span></h3>
+                        <div class="rate-input-group">
+                            <label>Rate: ₹</label>
+                            <input type="text" value="40" class="rate-input">
+                            <span class="unit">/kg</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-actions">
+                    <div class="product-actions">
+                        <button class="action-btn edit-btn"
+                            onclick="openEditModal('0', 'Farmers Tomato', 'टमाटर', '40', 'kg')"><i
+                                class="fas fa-pencil-alt"></i></button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct('0')"><i
+                                class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Order List Section -->
+        <div id="orders-section" class="order-list" style="display: none;">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.phone_number }}</td>
+                        <td>₹{{ order.total_amount }}</td>
+                        <td>{{ order.created_at|date:"d M, h:i A" }}</td>
+                        <td>
+                            <div class="product-actions" style="justify-content: flex-start; gap: 5px;">
+                                <button class="action-btn view-btn"
+                                    onclick="viewOrder('{{ order.id }}', '{{ order.full_name|escapejs }}', '{{ order.phone_number }}', '{{ order.address|escapejs }}', '{{ order.total_amount }}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <a href="{% url 'order_bill' order.id %}" target="_blank" class="action-btn bill-btn"
+                                    title="View & Share Bill">
+                                    <i class="fas fa-file-invoice"></i>
+                                </a>
+                                <button class="action-btn share-btn"
+                                    onclick="shareOrderViaWhatsApp('{{ order.id }}', '{{ order.phone_number }}', '{{ order.full_name|escapejs }}')"
+                                    title="Share via WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </button>
+                            </div>
+                            <!-- Hidden items -->
+                            <div id="items-{{ order.id }}" style="display:none;">
+                                {% for item in order.items.all %}
+                                <div class="order-item-row">
+                                    <span>{{ forloop.counter }}. {{ item.product.name }} ({{ item.quantity
+                                        }})</span>
+                                    <span>₹{{ item.price_at_time }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align:center;">No orders yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Admins List Section -->
+        <div id="admins-section" class="order-list" style="display: none;">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                    <tr>
+                        <td>#{{ admin.id }}</td>
+                        <td>{{ admin.username }}</td>
+                        <td>{{ admin.email }}</td>
+                        <td>{% if admin.is_superuser %}Super Admin{% else %}Admin{% endif %}</td>
+                        <td><span style="color: green;">Active</span></td>
+                        <td>
+                            {% if request.user.id != admin.id %}
+                            <button class="action-btn delete-btn" onclick="deleteAdmin('{{ admin.id }}')"
+                                title="Delete Admin">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            {% else %}
+                            <span style="color: #ccc;">(You)</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align:center;">No admins found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add Product</h2>
+            <form id="productForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" name="name" id="p_name" list="namebuffers" required>
+                    <datalist id="namebuffers">
+                        <option value="Tomato">
+                        <option value="Potato">
+                        <option value="Onion">
+                        <option value="Garlic">
+                        <option value="Ginger">
+                        <option value="Chilli Green">
+                        <option value="Coriander">
+                        <option value="Lemon">
+                        <option value="Cucumber">
+                        <option value="Cabbage">
+                        <option value="Cauliflower">
+                        <option value="Spinach (Palak)">
+                        <option value="Fenugreek (Methi)">
+                        <option value="Brinjal">
+                        <option value="Bottle Gourd">
+                        <option value="Bitter Gourd">
+                        <option value="Lady Finger (Okra)">
+                        <option value="Capsicum">
+                        <option value="Carrot">
+                        <option value="Peas">
+                        <option value="French Beans">
+                        <option value="Apple">
+                        <option value="Banana">
+                        <option value="Mango">
+                        <option value="Grapes">
+                        <option value="Papaya">
+                        <option value="Watermelon">
+                        <option value="Pomegranate">
+                        <option value="Orange">
+                        <option value="Sweet Lime">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label>Local Name (Hindi)</label>
+                    <input type="text" name="local_name" id="p_local_name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" name="price" id="p_price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Unit</label>
+                        <select name="unit" id="p_unit" required
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none;">
+                            <option value="" disabled selected>Select Unit</option>
+                            <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="pc">pc</option>
+                            <option value="dozen">dozen</option>
+                            <option value="bunch">bunch</option>
+                            <option value="liter">liter</option>
+                            <option value="ml">ml</option>
+                            <option value="packet">packet</option>
+                            <option value="box">box</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Product Image</label>
+                    <input type="file" name="image" id="p_image">
+                </div>
+                <button type="submit" class="submit-btn">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeOrderModal()">&times;</span>
+            <h2>Order Details #<span id="modalOrderId"></span></h2>
+            <div id="order-details-content"></div>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div id="addAdminModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAddAdminModal()">&times;</span>
+            <h2>Add New Admin</h2>
+            <form action="{% url 'admin_add_admin' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select name="role" required
+                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none;">
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Super Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Add Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        function showSection(sectionId) {
+            console.log("Switching to section:", sectionId);
+            window.scrollTo(0, 0);
+
+            document.getElementById('products-section').style.display = 'none';
+            document.getElementById('orders-section').style.display = 'none';
+            if (document.getElementById('admins-section')) document.getElementById('admins-section').style.display = 'none';
+
+            document.getElementById('nav-products').classList.remove('active');
+            document.getElementById('nav-orders').classList.remove('active');
+            if (document.getElementById('nav-admins')) document.getElementById('nav-admins').classList.remove('active');
+
+            if (sectionId === 'products') {
+                document.getElementById('products-section').style.display = 'flex';
+                document.getElementById('nav-products').classList.add('active');
+            } else if (sectionId === 'orders') {
+                document.getElementById('orders-section').style.display = 'block';
+                document.getElementById('nav-orders').classList.add('active');
+            } else if (sectionId === 'admins') {
+                document.getElementById('admins-section').style.display = 'block';
+                document.getElementById('nav-admins').classList.add('active');
+            }
+        }
+
+        const adminModal = document.getElementById("addAdminModal");
+        const orderModal = document.getElementById("orderModal");
+        const modalOrderId = document.getElementById("modalOrderId");
+        const orderContent = document.getElementById("order-details-content");
+
+        function viewOrder(id, name, phone, address, total) {
+            orderModal.style.display = "block";
+            modalOrderId.innerText = id;
+
+            // Get hidden items
+            const itemsHtml = document.getElementById('items-' + id).innerHTML;
+
+            orderContent.innerHTML = `
+                <div style="margin-bottom:15px">
+                    <p><strong>Customer:</strong> ${name}</p>
+                    <p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
+                    <p><strong>Address:</strong> ${address}</p>
+                </div>
+                <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
+                    <strong>Items:</strong>
+                    ${itemsHtml}
+                </div>
+                <h3 style="margin-top:15px; text-align:right; color:#27ae60;">Total: ₹${total}</h3>
+            `;
+        }
+
+        function closeOrderModal() {
+            orderModal.style.display = "none";
+        }
+
+        const modal = document.getElementById("productModal");
+        const form = document.getElementById("productForm");
+        const modalTitle = document.getElementById("modalTitle");
+
+        // Open Modal for Adding
+        function openAddModal() {
+            console.log("Add Product Clicked");
+            modal.style.display = "block";
+            modalTitle.innerText = "Add Product";
+            form.action = "{% url 'admin_add_product' %}";
+            form.reset();
+        }
+
+        // Open Modal for Editing (called by onclick in HTML)
+        function openEditModal(id, name, localName, price, unit) {
+            modal.style.display = "block";
+            modalTitle.innerText = "Edit Product";
+            form.action = "/edit-product/" + id + "/";
+
+            document.getElementById('p_name').value = name;
+            document.getElementById('p_local_name').value = localName;
+            document.getElementById('p_price').value = price;
+            document.getElementById('p_unit').value = unit;
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Close on click outside
+        // Close on click outside
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+            if (event.target == orderModal) {
+                closeOrderModal();
+            }
+            if (event.target == adminModal) {
+                closeAddAdminModal();
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                window.location.href = "/delete-product/" + id + "/";
+            }
+        }
+
+        function shareOrderViaWhatsApp(orderId, phone, customerName) {
+            const phone_clean = phone.replace(/[^0-9]/g, '');
+            const message = `Hi ${customerName},\n\nYour order #${orderId} from Daily Fresh is ready! 🌱\n\nPlease find your invoice here: ${window.location.origin}/order-bill/${orderId}/\n\nThank you for shopping with us!`;
+            const whatsappUrl = `https://wa.me/91${phone_clean}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Auto-translate English Name to Hindi
+        const nameInput = document.getElementById('p_name');
+        const localNameInput = document.getElementById('p_local_name');
+
+        nameInput.addEventListener('blur', async function () {
+            const text = nameInput.value;
+            if (text) {
+                try {
+                    const originalPlaceholder = localNameInput.placeholder;
+                    localNameInput.placeholder = "Translating...";
+                    const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hi&dt=t&q=${encodeURIComponent(text)}`);
+                    const data = await response.json();
+                    if (data && data[0] && data[0][0]) {
+                        localNameInput.value = data[0][0][0];
+                    }
+                    localNameInput.placeholder = originalPlaceholder || "";
+                } catch (error) {
+                    console.error("Translation error:", error);
+                }
+            }
+        });
+
+
+        function openAddAdminModal() {
+            adminModal.style.display = "block";
+        }
+
+        function closeAddAdminModal() {
+            adminModal.style.display = "none";
+        }
+
+        function deleteAdmin(id) {
+            if (confirm("Are you sure you want to delete this admin?")) {
+                window.location.href = "/store-admin/delete-admin/" + id + "/";
+            }
+        }
+    </script>
+</body>
+
+</html>
